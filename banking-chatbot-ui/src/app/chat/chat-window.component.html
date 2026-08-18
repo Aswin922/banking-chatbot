@@ -1,0 +1,47 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h1>💼 Banking Services Chatbot</h1>
+    <div class="header-actions">
+      <button class="btn-header" (click)="onMainMenu()" title="Main Menu">
+        🏠 Menu
+      </button>
+      <button class="btn-header" (click)="onReset()" title="Start Over">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <div class="messages-container" #messagesContainer>
+    <app-chat-message
+      *ngFor="let message of messages"
+      [message]="message"
+      (optionSelected)="onOptionSelected($event)">
+    </app-chat-message>
+
+    <div *ngIf="messages.length === 0" class="empty-state">
+      <p>No messages yet. Start a conversation!</p>
+    </div>
+  </div>
+
+  <form class="input-container" (ngSubmit)="onSubmit()">
+    <input
+      type="text"
+      class="chat-input"
+      [(ngModel)]="userInput"
+      name="userInput"
+      placeholder="Type your message..."
+      [disabled]="isInputDisabled"
+      autocomplete="off"
+    />
+    <button
+      type="submit"
+      class="btn-send"
+      [disabled]="!userInput.trim() || isInputDisabled">
+      Send
+    </button>
+  </form>
+
+  <div class="quick-commands" *ngIf="!isInputDisabled">
+    <small>Quick commands: <kbd>menu</kbd> <kbd>cancel</kbd> <kbd>back</kbd> <kbd>skip</kbd></small>
+  </div>
+</div>

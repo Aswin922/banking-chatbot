@@ -1,0 +1,65 @@
+# Java / Maven / Spring Boot
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.log
+.DS_Store
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+*.swp
+*.swo
+*~
+.metadata/
+
+# Angular / Node.js
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Logs
+logs/
+*.log
+
+# Environment variables (if you add them later)
+.env
+.env.local
+.env.*.local
+
+# MySQL / Database (don't commit actual databases)
+*.sql.bak
+*.db
+
+# PowerPoint (optional - remove this line if you want to commit the PPT)
+# *.pptx

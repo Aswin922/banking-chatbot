@@ -1,0 +1,39 @@
+<div class="message-wrapper" [class.user]="message.sender === 'user'" [class.bot]="message.sender === 'bot'">
+  <div class="message-bubble" [class.loading]="message.isLoading">
+    <div *ngIf="message.isLoading" class="typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div *ngIf="!message.isLoading" class="message-text">
+      <p *ngFor="let line of formatText(message.text)">{{ line }}</p>
+    </div>
+
+    <!-- Table display for structured data -->
+    <div *ngIf="hasTableData()" class="data-table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th *ngFor="let header of getTableHeaders()">{{ header }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of getTableRows()">
+            <td *ngFor="let cell of row">{{ cell }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="message-time">
+      {{ message.timestamp | date:'short' }}
+    </div>
+  </div>
+
+  <app-chat-options
+    *ngIf="message.options && message.options.length > 0 && !message.isLoading"
+    [options]="message.options"
+    (optionSelected)="onOptionClick($event)">
+  </app-chat-options>
+</div>

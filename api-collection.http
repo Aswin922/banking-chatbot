@@ -1,0 +1,337 @@
+# Banking Chatbot API Collection
+# Use with REST Client extension in VS Code or IntelliJ HTTP Client
+# Or import into Postman
+
+###############################################################################
+# CUSTOMER SERVICE (Port 9081)
+###############################################################################
+
+### 1. Create Customer - Success
+POST http://localhost:9081/api/v1/customers
+Content-Type: application/json
+
+{
+  "name": "Alice Johnson",
+  "email": "alice.johnson@email.com",
+  "phone": "555-9999",
+  "address": "789 Elm St, Seattle, WA"
+}
+
+### 2. Create Customer - Validation Error (Invalid Email)
+POST http://localhost:9081/api/v1/customers
+Content-Type: application/json
+
+{
+  "name": "Bob Smith",
+  "email": "invalid-email",
+  "phone": "555-8888",
+  "address": "123 Main St"
+}
+
+### 3. Create Customer - Duplicate Email Error
+POST http://localhost:9081/api/v1/customers
+Content-Type: application/json
+
+{
+  "name": "Duplicate User",
+  "email": "john.smith@email.com",
+  "phone": "555-7777",
+  "address": "456 Oak Ave"
+}
+
+### 4. Get All Customers (Paginated)
+GET http://localhost:9081/api/v1/customers?page=0&limit=10
+
+### 5. Search Customers by Name
+GET http://localhost:9081/api/v1/customers?page=0&limit=10&search=john
+
+### 6. Get Customer by ID - Success
+GET http://localhost:9081/api/v1/customers/1
+
+### 7. Get Customer by ID - Not Found
+GET http://localhost:9081/api/v1/customers/999
+
+### 8. Update Customer - Success
+PUT http://localhost:9081/api/v1/customers/1
+Content-Type: application/json
+
+{
+  "name": "John Smith Updated",
+  "email": "john.smith@email.com",
+  "phone": "555-0101",
+  "address": "123 Main St, New York, NY 10001"
+}
+
+### 9. Update Customer - Change Email (Duplicate Check)
+PUT http://localhost:9081/api/v1/customers/2
+Content-Type: application/json
+
+{
+  "name": "Mary Johnson",
+  "email": "john.smith@email.com",
+  "phone": "555-0102",
+  "address": "456 Oak Ave, Los Angeles, CA 90001"
+}
+
+### 10. Delete Customer - Success
+DELETE http://localhost:9081/api/v1/customers/19
+
+### 11. Health Check - Customer Service
+GET http://localhost:9081/actuator/health
+
+###############################################################################
+# ACCOUNT SERVICE (Port 9082)
+###############################################################################
+
+### 12. Create Account - Success
+POST http://localhost:9082/api/v1/accounts
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "accountType": "SAVINGS",
+  "initialDeposit": 5000.00
+}
+
+### 13. Create Account - Invalid Customer
+POST http://localhost:9082/api/v1/accounts
+Content-Type: application/json
+
+{
+  "customerId": 999,
+  "accountType": "CHECKING",
+  "initialDeposit": 1000.00
+}
+
+### 14. Create Account - Validation Error (Negative Deposit)
+POST http://localhost:9082/api/v1/accounts
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "accountType": "CHECKING",
+  "initialDeposit": -100.00
+}
+
+### 15. Get All Accounts (Paginated)
+GET http://localhost:9082/api/v1/accounts?page=0&limit=10
+
+### 16. Get Accounts by Customer ID
+GET http://localhost:9082/api/v1/accounts?page=0&limit=10&customerId=1
+
+### 17. Get Account by ID - Success
+GET http://localhost:9082/api/v1/accounts/1
+
+### 18. Get Account by ID - Not Found
+GET http://localhost:9082/api/v1/accounts/999
+
+### 19. Update Account - Change Type
+PUT http://localhost:9082/api/v1/accounts/1
+Content-Type: application/json
+
+{
+  "accountType": "SAVINGS",
+  "status": "ACTIVE"
+}
+
+### 20. Update Account - Change Status to FROZEN
+PUT http://localhost:9082/api/v1/accounts/2
+Content-Type: application/json
+
+{
+  "status": "FROZEN"
+}
+
+### 21. Delete Account - Success (Balance Must Be Zero)
+DELETE http://localhost:9082/api/v1/accounts/45
+
+### 22. Delete Account - Error (Non-Zero Balance)
+DELETE http://localhost:9082/api/v1/accounts/1
+
+### 23. Get Account Balance (Internal Endpoint)
+GET http://localhost:9082/api/v1/accounts/1/balance
+
+### 24. Update Account Balance (Internal Endpoint)
+PATCH http://localhost:9082/api/v1/accounts/1/balance
+Content-Type: application/json
+
+{
+  "delta": -100.00,
+  "transactionId": "TXN-12345"
+}
+
+### 25. Health Check - Account Service
+GET http://localhost:9082/actuator/health
+
+###############################################################################
+# TRANSACTION SERVICE (Port 9083)
+###############################################################################
+
+### 26. Create Transaction - CREDIT
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "type": "CREDIT",
+  "amount": 1000.00,
+  "description": "Salary Deposit",
+  "category": "INCOME"
+}
+
+### 27. Create Transaction - DEBIT
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "type": "DEBIT",
+  "amount": 150.00,
+  "description": "Grocery Shopping",
+  "category": "SHOPPING"
+}
+
+### 28. Create Transaction - Insufficient Funds Error
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "type": "DEBIT",
+  "amount": 999999.00,
+  "description": "Large Withdrawal",
+  "category": "WITHDRAWAL"
+}
+
+### 29. Create Transaction - Invalid Account
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 999,
+  "type": "CREDIT",
+  "amount": 100.00,
+  "description": "Test",
+  "category": "OTHER"
+}
+
+### 30. Get All Transactions for Account
+GET http://localhost:9083/api/v1/transactions?accountId=1&page=0&limit=10
+
+### 31. Get Transactions with Date Range
+GET http://localhost:9083/api/v1/transactions?accountId=1&page=0&limit=10&fromDate=2025-01-01T00:00:00&toDate=2025-12-31T23:59:59
+
+### 32. Get Transaction by ID - Success
+GET http://localhost:9083/api/v1/transactions/1
+
+### 33. Get Transaction by ID - Not Found
+GET http://localhost:9083/api/v1/transactions/999
+
+### 34. Update Transaction - Change Description/Category
+PUT http://localhost:9083/api/v1/transactions/1
+Content-Type: application/json
+
+{
+  "description": "Updated Description",
+  "category": "UPDATED_CATEGORY"
+}
+
+### 35. Update Transaction - Error (Already Voided)
+PUT http://localhost:9083/api/v1/transactions/49
+Content-Type: application/json
+
+{
+  "description": "Cannot update voided transaction",
+  "category": "TEST"
+}
+
+### 36. Void Transaction - Success
+DELETE http://localhost:9083/api/v1/transactions/2
+Content-Type: application/json
+
+{
+  "voidReason": "Customer requested refund"
+}
+
+### 37. Void Transaction - Already Voided Error
+DELETE http://localhost:9083/api/v1/transactions/49
+Content-Type: application/json
+
+{
+  "voidReason": "Duplicate void attempt"
+}
+
+### 38. Health Check - Transaction Service
+GET http://localhost:9083/actuator/health
+
+###############################################################################
+# INTEGRATION TESTS - Full Flow
+###############################################################################
+
+### Flow 1: Create Customer -> Create Account -> Create Transaction
+# Step 1: Create new customer
+POST http://localhost:9081/api/v1/customers
+Content-Type: application/json
+
+{
+  "name": "Test Flow User",
+  "email": "testflow@email.com",
+  "phone": "555-0001",
+  "address": "Test Address"
+}
+
+# Step 2: Create account for customer (use customerId from step 1)
+POST http://localhost:9082/api/v1/accounts
+Content-Type: application/json
+
+{
+  "customerId": 21,
+  "accountType": "CHECKING",
+  "initialDeposit": 1000.00
+}
+
+# Step 3: Create transaction for account (use accountId from step 2)
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 51,
+  "type": "DEBIT",
+  "amount": 50.00,
+  "description": "Test Purchase",
+  "category": "SHOPPING"
+}
+
+### Flow 2: Verify Inter-Service Communication
+# Verify customer has accounts
+GET http://localhost:9082/api/v1/accounts?customerId=1
+
+# Verify account has transactions
+GET http://localhost:9083/api/v1/transactions?accountId=1
+
+### Flow 3: Test Business Rules
+# Try to deactivate customer with active accounts (should fail)
+DELETE http://localhost:9081/api/v1/customers/1
+
+# Try to close account with non-zero balance (should fail)
+DELETE http://localhost:9082/api/v1/accounts/1
+
+# Try to debit more than account balance (should fail)
+POST http://localhost:9083/api/v1/transactions
+Content-Type: application/json
+
+{
+  "accountId": 1,
+  "type": "DEBIT",
+  "amount": 999999.00,
+  "description": "Overdraft Attempt",
+  "category": "WITHDRAWAL"
+}
+
+###############################################################################
+# Swagger UI URLs
+###############################################################################
+
+# Customer Service Swagger: http://localhost:9081/swagger-ui.html
+# Account Service Swagger: http://localhost:9082/swagger-ui.html
+# Transaction Service Swagger: http://localhost:9083/swagger-ui.html
